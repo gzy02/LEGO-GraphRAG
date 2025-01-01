@@ -1,0 +1,17 @@
+langchain_community
+langchain_openai
+networkx
+nltk
+numpy
+python_igraph
+rank_bm25
+scikit_learn
+scipy
+sentence_transformers
+torch
+tqdm
+transformers
+jmespath
+bitsandbytes
+accelerate
+openai

@@ -1,0 +1,14 @@
+.vscode
+__pycache__
+tmp*
+*.pyc
+*.log
+*.out
+*.o
+*cache*
+*.bin
+*internal*
+*depend*
+*mark*
+*cmake*
+*.make
