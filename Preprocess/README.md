@@ -1,4 +1,4 @@
-# FRAG data preprocessing
+# Data preprocessing
 Preprocessing steps to obtain query-specific graph $\widetilde{G}$
 
 ## Step 0: Download Freebase

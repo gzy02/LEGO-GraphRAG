@@ -9,6 +9,7 @@ from post_retrieval import *
 import asyncio
 from tqdm import tqdm
 from utils.Tools import Query, construct_graph
+from config import llm_url, reasoning_model,  subgraph_list, reasoning_dataset, subgraph_path
 se_base_url = "/back-up/gzy/dataset/VLDB/Pipeline/subgraph/"
 pr_base_url = "/back-up/gzy/dataset/VLDB/Pipeline/PathRetrieval/"
 max_concurrent_requests = 32
@@ -53,53 +54,20 @@ async def run(pipeline, infos):
 
     return basic_info, eval_info
 
-
-model_name = "qwen2-70b"
-llm = LLM(model=model_name, url='http://localhost:8002/v1/chat/completions')
+llm = LLM(model=reasoning_model, url=llm_url)
 retrievalPipeline = {
-    # "SPR": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleNone()),
-    # "SPR/EMB": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleSemanticModel(window=-1, semantic_type="EMB")),
-    # f"SPR/LLM/{model_name}/EMB": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleLLM(llm, EmbeddingModel())),
-    # "BeamSearch/EMB": PRPipeline(RetrievalModuleSemanticModel(semantic_type="EMB"), PostRetrievalModuleNone()),
-    # "BeamSearch/BGE": PRPipeline(RetrievalModuleSemanticModel(semantic_type="BGE"), PostRetrievalModuleNone()),
-    # f"BeamSearch/LLM/{model_name}/EMB": PRPipeline(RetrievalModuleLLM(llm, EmbeddingModel()),
-    #                                                PostRetrievalModuleNone()),
+    "SPR": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleNone()),
+    "SPR/EMB": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleSemanticModel(window=-1, semantic_type="EMB")),
+    f"SPR/LLM/{reasoning_model}/EMB": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleLLM(llm, EmbeddingModel())),
+    "BeamSearch/EMB": PRPipeline(RetrievalModuleSemanticModel(semantic_type="EMB"), PostRetrievalModuleNone()),
+    f"BeamSearch/LLM/{reasoning_model}/EMB": PRPipeline(RetrievalModuleLLM(llm, EmbeddingModel()),
+                                                        PostRetrievalModuleNone()),
 }
-
-llm_pipeline = {
-    # f"SPR/LLM/{model_name}/EMB": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleLLM(llm, EmbeddingModel())),
-    f"BeamSearch/LLM/{model_name}/EMB_v2": PRPipeline(RetrievalModuleLLM(llm, EmbeddingModel()), PostRetrievalModuleNone()),
-    f"BeamSearch/LLM/{model_name}/BGE_v2": PRPipeline(RetrievalModuleLLM(llm, BGEModel()), PostRetrievalModuleNone()),
-    # f"SPR/LLM/{model_name}/Random": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleLLM(llm, RandomModel())),
-    # f"BeamSearch/LLM/{model_name}/Random": PRPipeline(RetrievalModuleLLM(llm, RandomModel()), PostRetrievalModuleNone()),
-}
-
-cpu_pipeline = {
-    # "SPR": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleNone()),
-    # "SPR/Random": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleSemanticModel(window=-1, semantic_type="Random")),
-    # "SPR/BM25": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleSemanticModel(window=-1, semantic_type="BM25")),
-    # "EPR": PRPipeline(RetrievalModuleBFS(2), PostRetrievalModuleNone()),
-    # "BeamSearch/Random": PRPipeline(RetrievalModuleSemanticModel(semantic_type="Random"), PostRetrievalModuleNone()),
-    # "BeamSearch/BM25": PRPipeline(RetrievalModuleSemanticModel(semantic_type="BM25"), PostRetrievalModuleNone()),
-}
-
-gpu_pipeline = {
-    # "SPR/BGE": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleSemanticModel(window=-1, semantic_type="BGE")),
-    # "SPR/EMB": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleSemanticModel(window=-1, semantic_type="EMB")),
-
-    # "BeamSearch/BGE": PRPipeline(RetrievalModuleSemanticModel(semantic_type="BGE"), PostRetrievalModuleNone()),
-    # "BeamSearch/EMB": PRPipeline(RetrievalModuleSemanticModel(semantic_type="EMB"), PostRetrievalModuleNone()),
-}
-
-# "webqsp","CWQ", "GrailQA","WebQuestion"
-dataset_list = ["webqsp", "CWQ", "GrailQA", "WebQuestion"]
-subgraph_list = ["PPR", "EMB/edge", f"LLM/{model_name}/EMB/ppr_1000_edge_64"]
-
-for reasoning_dataset in dataset_list:
+if __name__ == "__main__":
     for subgraph_type in subgraph_list:
         subgraph_path = se_base_url + \
             f"{reasoning_dataset}/subgraph/{subgraph_type}.json"
-        for retrievaltype, pipeline in llm_pipeline.items():
+        for retrievaltype, pipeline in retrievalPipeline.items():
             with open(subgraph_path, "r") as f:
                 infos = json.load(f)
             print(f"Processing {subgraph_path}...")
