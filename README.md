@@ -8,7 +8,6 @@ Source code and supplementary materials for **"LEGO-GraphRAG: Modularizing Graph
 
 - [Introduction](#introduction)
 - [Directory Structure](#directory-structure)
-- [Setup](#setup)
 - [System Overview](#system-overview)
   - [Preprocess](#preprocess)
   - [SEPRAlign](#sepralign)
@@ -19,6 +18,7 @@ Source code and supplementary materials for **"LEGO-GraphRAG: Modularizing Graph
   - [ExistingInstances](#existinginstances)
   - [ApproximatePPR](#approximateppr)
   - [FineTune](#finetune)
+- [Run the Instance Experiments](#run-the-instance-experiments)
 - [License](#license)
 
 ---
@@ -105,7 +105,7 @@ Includes scripts and configurations for fine-tuning EEMs and LLMs.
    ./vllm_qwen.sh
    ```
 
-5. Change the config.py file to the desired configuration. The keyworks should include :
+5. Change the config.py file to the desired configuration. The keyworks should include:
 - llm_url: the url of the deployed LLM
 - reasoning_model: the reasoning model used in the LLM
 - reasoning_dataset: the dataset used in the experiment
@@ -119,7 +119,6 @@ Includes scripts and configurations for fine-tuning EEMs and LLMs.
     python instance.py
     ```
 ---
-
 
 ## License
 
