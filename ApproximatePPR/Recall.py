@@ -1,3 +1,10 @@
+def getidlist():
+    txtPath = f"/back-up/gzy/dataset/VLDB/PPR.txt"
+    idlist = []
+    with open(txtPath, "r") as f:
+        for line in f:
+            idlist.append(line.strip())
+    return idlist
 def ourpprtime():
     alltime = 0
     count = 0
@@ -19,13 +26,9 @@ def toppprtime():
         for line in file:
             time_value = float(line.split(" ")[1])
             id = line.split(" ")[0]
-            # if time_value <70:
-            #     idlist.append(id)
             if id in idnamelist:
                 alltime += time_value
                 count += 1
-    # print("id list:",idlist)
-    # print("len id list:",len(idlist))
     print("TopPPR time count:", count)
     return alltime/count
 
@@ -67,24 +70,7 @@ def OurPPRrecall(answer, subgraph):
         if ans in subgraphnode:
             nodenum += 1
     return nodenum/len(answer)
-# def OurPPRrecall(answer,subgraph):
-#     ansset = set()
-#     for ans in answer:
-#         singleans = ans.split(" ")
-#         for single in singleans:
-#             for sub in subgraph:
-#                 if single in sub[0]:
-#                     ansset.add(ans)
-#                 if single in sub[2]:
-#                     ansset.add(ans)
-#     return len(ansset)/len(answer)
-
-
 def ToppprRecall(id, answer):
-    # 思路:1.从Toppper-answer读入txt,获取节点索引
-    # 2. 从name2id.index.json读入json获取 Freebase的索引
-    # 3. 从id2name.txt 读入txt获得节点名字
-    # 获得前2000个节点名字，计算recall
     toppprroot = "TopPPR/Topppr-answer/"
     with open(toppprroot+id+"_output.txt", "r") as file:
         lines = file.readlines()
@@ -93,7 +79,6 @@ def ToppprRecall(id, answer):
             indexid = line.split(" ")[0]
             idlist.append(indexid)
     countNum = 0
-    # print(idlist)
     for ans in answer:
         # ans -> Freebaseid -> indexid
         Freebaseid = name2FreeIDFC(ans)
@@ -111,18 +96,6 @@ def ToppprRecall(id, answer):
 
 def foraPPRRecall(id, answer):
     forapprroot = "fora/foraresult_2000/"
-    # with open(forapprroot+id+"_output.txt","r") as file:
-    #     lines = file.readlines()
-    #     namelist = []
-    #     for line in lines[:2000]:
-    #         indexid = line.split(" ")[0]
-    #         # if indexid=='0':
-    #         #     continue
-    #         Freebaseid = id2FreeBase[indexid]
-    #         name = id2nameFc(Freebaseid)
-    #         namelist.append(name)
-    # # 根据namelist 和answer算recall
-    # countNum =0
     with open(forapprroot+id+"_output.txt", "r") as file:
         lines = file.readlines()
         idlist = []
@@ -140,22 +113,6 @@ def foraPPRRecall(id, answer):
         if ansid in idlist:
             countNum += 1
     return countNum/len(answer)
-# def foraPlusPPRRecall(id,answer):
-#     forapprroot = "fora/foraresultplus_2000/"
-#     with open(forapprroot+id+"_output.txt","r") as file:
-#         lines = file.readlines()
-#         namelist = []
-#         for line in lines[:2000]:
-#             indexid = line.split(" ")[0]
-#             Freebaseid = id2FreeBase[indexid]
-#             name = id2nameFc(Freebaseid)
-#             namelist.append(name)
-#     # 根据namelist 和answer算recall
-#     countNum =0
-#     for ans in answer:
-#         if ans in namelist:
-#             countNum+=1
-#     return countNum/len(answer)
 
 
 def OurPPR():
@@ -199,16 +156,12 @@ def TopPPR():
                     count += 1
             except:
                 pass
-    # 得到Time
-    # print("TopPPR count:",count)
     topPPRRecall = topPPRRecall/count
     topPPRTime = toppprtime()
     return ["TopPPR", topPPRRecall, topPPRTime]
 
 
 def Fora():
-    # 得到Recall
-    # 得到Time
     filepath = f"JsonResult/fora_webqsp_first_200_output.jsonl"
     foraRecall = 0
     count = 0
@@ -229,37 +182,13 @@ def Fora():
     foraRecall = foraRecall/count
     foraTime = foratime()
     return ["Fora", foraRecall, foraTime]
-# def ForaPlus():
-#     # 得到Recall
-#     # 得到Time
-#     filepath = f"JsonResult/fora_webqsp_first_200_output.jsonl"
-#     foraRecall = 0
-#     count =0
-#     with open(filepath, "r") as fp:
-#         lines = fp.readlines()
-#         for line in lines:
-#             obj = json.loads(line)
-#             id = obj["id"]
-#             answer = obj["answers"]
-#             if id in idnamelist:
-#                 foraRecall += foraPlusPPRRecall(id,answer)
-#                 count += 1
-#     # 得到Time
-#     print("Fora count:",count)
-#     foraRecall= foraRecall/count
-#     foraTime =foraplustime()
-#     return ["Fora+",foraRecall,foraTime]
 
 
 def Foraplus():
     foraplusRecall = 0
     foraplusTime = 0
     return ["Foraplus", foraplusRecall, foraplusTime]
-# def id2nameFc(mid):
-#     if mid in id2name:
-#         return id2name[mid]
-#     else:
-#         return mid
+
 
 
 def name2FreeIDFC(name):
@@ -276,8 +205,6 @@ if __name__ == "__main__":
     before = time.time()
     with open("TopPPR/dataset/name2id.index.json", "r") as fp:
         name2id = json.load(fp)
-    # id2FreeBase = {str(v): str(k) for k, v in name2id.items()}
-    # 读入id2name.txt
     with open("/back-up/gzy/id2name.txt", "r") as fp:
         name2FreeID = {}
         for line in fp:
@@ -289,7 +216,7 @@ if __name__ == "__main__":
     PPRlist = ["OurPPR", "TopPPR", "fora"]
     PPRResultlist = [["PPRtype", "recall", "time"]]
 
-    idnamelist = []  # 从文件读入idname, 用于统计recall
+    idnamelist = getidlist()  # 从文件读入idname, 用于统计recall
     for ppr in PPRlist:
         if ppr == "OurPPR":
             PPRResultlist.append(OurPPR())
@@ -297,8 +224,6 @@ if __name__ == "__main__":
             PPRResultlist.append(TopPPR())
         elif ppr == "fora":
             PPRResultlist.append(Fora())
-        # elif ppr =="foraplus":
-        #     PPRResultlist.append(Foraplus())
     df = pd.DataFrame(PPRResultlist)
     df.to_excel("Recall.xlsx", index=False)
     print("Done!")
