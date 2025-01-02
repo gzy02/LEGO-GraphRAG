@@ -259,12 +259,8 @@ def GenerationImage(rootpath, saveImgpath,modeNUM):
     # plt.tight_layout()
     print("画图保存成功：", saveImgpath)
 if __name__ == "__main__":
-    # llmlist = ["qwen2-7b","llama3-8b","qwen2-70b","qwen2-7b","llama3-8b","qwen2-70b"]
     llmlist = ["qwen2-7b","glm4-9b","qwen2-70b","llama3.3-70b","qwen2-7b","glm4-9b","qwen2-70b","llama3.3-70b"]
-    # llmlist = ["llama3.3-70b"]
     datasetlist = ["CWQ","webqsp","GrailQA","WebQuestion"]
-    # datasetlist = ["webqsp"]
-
     resultlist = {
         "GSR":"SPR",
         "OSR-EEMS":"SPR/EMB",
