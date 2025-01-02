@@ -34,11 +34,6 @@ def processSingleJson(jsonpath,prtype,idlist):
             id = str(data["id"])
             if id not in idlist:
                 continue
-            # if prtype=="GSR":
-            #     # 随机打乱
-            #     # print("random shuffle")
-            #     # print("len(prediction)",len(prediction))
-            #     random.shuffle(prediction)
             prediction = prediction[:PATHNUM]
             F1 += eval_f1(prediction,answers)
             Hit32 += eval_hr_topk(prediction,answers,PATHNUM)
@@ -82,42 +77,6 @@ def calculate_position_weighted_averages(file_paths , output_file):
     result_df.to_excel(output_file, index=False)
 
     return result_df
-
-# retrievalPipeline = {
-#     "SPR": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleNone()),
-#     "SPR/BM25": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleSemanticModel(window=-1, semantic_type="BM25")),
-#     "SPR/EMB": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleSemanticModel(window=-1, semantic_type="EMB")),
-#     "SPR/BGE": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleSemanticModel(window=-1, semantic_type="BGE")),
-#     f"SPR/LLM/{model_name}/BM25": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleLLM(llm, BM25Model())),
-#     f"SPR/LLM/{model_name}/BGE": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleLLM(llm, BGEModel())),
-#     f"SPR/LLM/{model_name}/EMB": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleLLM(llm, EmbeddingModel())),
-#     f"SPR/LLM/{model_name}/Random": PRPipeline(RetrievalModuleDij(), PostRetrievalModuleLLM(llm, RandomModel())),
-#     "EPR": PRPipeline(RetrievalModuleBFS(), PostRetrievalModuleNone()),
-
-#     "BeamSearch/Random": PRPipeline(RetrievalModuleSemanticModel(semantic_type="BM25"), PostRetrievalModuleNone()), "BeamSearch/BM25": PRPipeline(RetrievalModuleSemanticModel(semantic_type="BM25"), PostRetrievalModuleNone()),
-#     "BeamSearch/EMB": PRPipeline(RetrievalModuleSemanticModel(semantic_type="EMB"), PostRetrievalModuleNone()),
-#     "BeamSearch/BGE": PRPipeline(RetrievalModuleSemanticModel(semantic_type="BGE"), PostRetrievalModuleNone()),
-#     f"BeamSearch/LLM/{model_name}/BM25": PRPipeline(RetrievalModuleLLM(llm, BM25Model()),
-#                                                     PostRetrievalModuleNone()),
-#     f"BeamSearch/LLM/{model_name}/EMB": PRPipeline(RetrievalModuleLLM(llm, EmbeddingModel()),
-#                                                    PostRetrievalModuleNone()),
-#     f"BeamSearch/LLM/{model_name}/BGE": PRPipeline(RetrievalModuleLLM(llm, BGEModel()),
-#                                                    PostRetrievalModuleNone()),
-#     f"BeamSearch/LLM/{model_name}/Random": PRPipeline(RetrievalModuleLLM(llm, RandomModel()),
-# }
-
-# 把这些datasetlist-modelist的结果进行合并
-# 先处理一个dataset的,然后把四个dataset的结果合并
-# 结果excel：
-# 1. EPR SPR 一个excel
-# 2. SPR/BM25 SPR/EMB SPR/BGE SPR/Random 一个excel
-# 3. SPR/LLM/qwen2-70b/BM25 SPR/LLM/qwen2-70b/EMB SPR/LLM/qwen2-70b/BGE SPR/LLM/qwen2-70b/Random 一个excel
-# 4. BeamSearch/Random BeamSearch/BM25 BeamSearch/EMB BeamSearch/BGE 一个excel
-# 5. BeamSearch/LLM/qwen2-70b/BM25 BeamSearch/LLM/qwen2-70b/EMB BeamSearch/LLM/qwen2-70b/BGE BeamSearch/LLM/qwen2-70b/Random 一个excel
-# excel 格式
-# Method F1 Hit@32
-# EPR  0.1 0.2
-# SPR  0.1 0.2
 def PR(PATHNUM):
     datasetlist = ["CWQ","webqsp","GrailQA","WebQuestion"] #,"WebQuestion","GrailQA"
     modelist = ["EMB/edge","PPR","LLM/qwen2-70b/EMB/ppr_1000_edge_64"]
@@ -135,10 +94,6 @@ def PR(PATHNUM):
         for prtype,result in resultlist.items():
             data = [["Method",f"F1@{PATHNUM}",f"Hit@{PATHNUM}"]]
             for r in resultlist[prtype]:
-                # if r == "SPR/LLM/qwen2-70b/BGE_new.json":
-                #     ROOTPATH = "/back-up/gzy/dataset/VLDB/new250/PathRetrieval"
-                # else:
-                #     ROOTPATH = "/back-up/gzy/dataset/VLDB/Pipeline/PathRetrieval"
                 F1 = 0
                 Hit32 = 0
                 for model in modelist:
@@ -278,7 +233,7 @@ def getStructImage(rootpath, saveImgpath, metric):
 
 PATHNUMlist = [1,4,8,16,32]
 for PATHNUM in PATHNUMlist:
-    # PR(PATHNUM)
+    PR(PATHNUM)
     getStructImage(ROOTPATH+"/Result", ROOTPATH+f"/Result/PR-F1@{PATHNUM}.pdf", f"F1@{PATHNUM}")
     getStructImage(ROOTPATH+"/Result", ROOTPATH+f"/Result/PR-Hit@{PATHNUM}.pdf", f"Hit@{PATHNUM}")
 
