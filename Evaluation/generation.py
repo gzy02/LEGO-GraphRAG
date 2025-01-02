@@ -282,11 +282,7 @@ if __name__ == "__main__":
     modelist = ["PPR","EMB/edge","LLM/qwen2-70b/EMB/ppr_1000_edge_64"]
     PATHNUMlist = [32]
     PATHNUM = 32
-    # for PATHNUM in PATHNUMlist:
-    #     for dataset in datasetlist:
-    #         generation(PATHNUM,dataset)
-    # print("全部处理完成！")
-    # for llm in llmlist:
-    # for dataset in datasetlist:
+    for PATHNUM in PATHNUMlist:
+        for dataset in datasetlist:
+            generation(PATHNUM,dataset)
     GenerationImage(f"/back-up/gzy/dataset/VLDB/Instance/NewGeneration/Result",f"/back-up/gzy/dataset/VLDB/Instance/NewGeneration/Result/Generation-Hit@{PATHNUM}.pdf",len(llmlist))
-    # print(f"{llm}画图完成！")
