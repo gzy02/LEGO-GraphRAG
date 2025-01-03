@@ -235,12 +235,8 @@ if __name__ == "__main__":
     modelist = ["PPR","EMB/edge","LLM/qwen2-70b/EMB/ppr_1000_edge_64"]
     PATHNUMlist = [32]
     PATHNUM = 32
-    # for PATHNUM in PATHNUMlist:
-    #     generation(PATHNUM,"OneHop")
-    #     generation(PATHNUM,"TwoHop")
-    #     generation(PATHNUM,"MultiHop")
-    # for llm in llmlist:
-    # for dataset in datasetlist:
+    for PATHNUM in PATHNUMlist:
+        generation(PATHNUM,"OneHop")
+        generation(PATHNUM,"TwoHop")
+        generation(PATHNUM,"MultiHop")
     GenerationImage(f"/back-up/gzy/dataset/VLDB/Instance/NewGeneration/Result",f"/back-up/gzy/dataset/VLDB/Instance/NewGeneration/Result/Average-Generation-Hit@{PATHNUM}.pdf")
-    # GenerationImage(f"/back-up/gzy/dataset/VLDB/Instance/NewGeneration/Result",f"/back-up/gzy/dataset/VLDB/Instance/NewGeneration/Result/Generation-Hit@{PATHNUM}.pdf",hoptype="MultiHop")
-    # print(f"{llm}画图完成！")

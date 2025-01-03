@@ -296,24 +296,14 @@ def getImage():
         elif metric == "Recall":
             pprrecall = "/back-up/gzy/dataset/VLDB/SE_new/AverageSubgraph/Average-smallModel-PPR-Recall.xlsx"
             dfpprrecall = pd.read_excel(pprrecall)
-            # y0 = dfpprrecall["PPR"].tolist()
-            # x0 = dfpprrecall["PPRTriple"].tolist()
-            # x0 = np.log2(x0)
-            #line ,=ax.plot(x0, y0, label=f'PPR', color=markline[9][2], marker=markline[9][0], linestyle=markline[9][1], linewidth=10, markersize=40)
-            # all_handles.append(line)
-            # all_labels.append('PPR')
+
             ssize = 2000
-            # ax.scatter(np.log2(21), 0.49, label='LLM-NP', color='#FF4500', s=ssize, marker='s')
-            # ax.scatter(np.log2(289), 0.70, label='LLM-EP', color='#8A2BE2', s=ssize, marker='H')
-            # ax.scatter(np.log2(14), 0.50, label='LLM-TP', color='#FF00FF', s=ssize, marker='P')
+    
             ax.scatter(7.3, 0.50, label='LLM-TP', color='#FF00FF', s=ssize, marker='P')
             ax.scatter(7.6, 0.49, label='LLM-NP', color='#FF4500', s=ssize, marker='s')
             ax.scatter(8.0, 0.70, label='LLM-EP', color='#8A2BE2', s=ssize, marker='H')
             all_handles.extend(ax.collections[-3:])  # Add scatter plot handles
             all_labels.extend(['LLM-TP', 'LLM-NP', 'LLM-EP'])
-            # yticks = [i for i in np.range(0.4,0.85,0.2)]
-            # yticklabels = [str(i) for i in yticks]
-            # ax.set_yticks(yticks, yticklabels)
             ax.set_yticks(np.arange(0.4, 0.81, 0.1))
         for model in modellist:
             excelpath = f"{ROOTPATH}/AverageSubgraph/Average-{model}-{metric}.xlsx"
@@ -348,24 +338,11 @@ def getImage():
             ax.set_ylabel(f'{metric}', fontsize=90, fontweight='bold')
             ax.tick_params(axis='y', labelsize=70,length=10)
             ax.tick_params(axis='x', labelsize=70,length=10,rotation=45)
-            # ax.set_xlim(0, 5000)
-            # ax.set_xticks(np.append(np.arange(0, 6000, 2000), 9000))  # 在原有刻度的基础上加入 9000
-            # xticks = [1,1000,2000,3000, 4000,5000, 6000,7000, 8000, 8500]
-            # xticklabels = ['0','1000', '2000','3000', '4000','5000', '1.2e6', '2.7e7', '1.2e8','  ']
-            # ax.set_xticks(xticks, xticklabels)
-            # xticks = windowslist
             xticks = [7.3,7.6,8,9,10,11,12]
             xticklabels = ["14","21","8","9","10","11","12"]
             ax.set_xticks(xticks, xticklabels)
             ax.xaxis.set_major_formatter(FuncFormatter(format_func))
         index += 1
-    # 统一添加图例
-    #legendlist = ["PPR","LLM-TP","LLM-NP","LLM-EP","ST-NP", "ST-EP", "ST-TP", "Re-Ranker-NP", "Re-Ranker-EP", "Re-Ranker-TP", "BM25-NP", "BM25-EP", "BM25-TP"]
-    # all_handles_after = [all_handles[2],,all_handles[7],all_handles[10],
-    #                      all_handles[1],all_handles[6],all_handles[9],all_handles[12],
-    #                      all_handles[3],all_handles[5],all_handles[8],all_handles[11],
-    #                     all_handles[0]]
-    # print(all_handles)
     print(all_labels)
     handles, labels = ax.get_legend_handles_labels()
     handles_after = [all_handles[2],all_handles[3],all_handles[1],
@@ -376,16 +353,6 @@ def getImage():
                     all_labels[4],all_labels[5],all_labels[6],
                     all_labels[7],all_labels[8],all_labels[9],
                     all_labels[10],all_labels[11],all_labels[12]]
-    # all_handles_after = [all_handles[2],all_handles[3],all_labels[1],all_labels[0],
-    #                      all_handles[4],all_handles[5],all_labels[6],
-    #                      all_handles[7],all_handles[8],all_labels[9],
-    #                     all_handles[10],all_handles[11],all_labels[12]]
-    # all_labels_after = [all_labels[2],all_labels[3],all_labels[1],all_labels[0],
-    #                     all_labels[4],all_labels[5],all_labels[6],
-    #                     all_labels[7],all_labels[8],all_labels[9],
-    #                     all_labels[10],all_labels[11],all_labels[12]]
-    # print(all_labels_after)
-    # print(len(set(all_handles_after)))
     font_properties = FontProperties(weight='bold', size=65)
     fig.legend(handles=handles_after, labels=labels_after,loc='upper center', bbox_to_anchor=(0.52, 0.95), ncol=4, prop=font_properties)
     # plt.subplots_adjust(top=0.8, left=0.08, right=0.95,bottom=0.14)
@@ -401,14 +368,9 @@ if __name__ == '__main__':
     modellist = ["EMB","BGE","BM25"]
     prtypelist = ["node","edge","triple"]
     metriclist = ["F1","Recall"]
-    # 得到modellist 所有model的数据，每一个model存入两个excel中 分别为F1和Recall,excel格式为：
-    # windows NP EP TP
-    # 500   0.1 0.2 0.3
-    # 1000  0.2 0.3 0.4
-    # ...
-    # getexcel()
-    # print("get excel done!")
-    # getpprexcel()
-    # print("get ppr excel done!")
+    getexcel()
+    print("get excel done!")
+    getpprexcel()
+    print("get ppr excel done!")
     getImage()
     print("get image done!")

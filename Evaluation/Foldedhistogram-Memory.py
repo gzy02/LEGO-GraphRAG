@@ -7,11 +7,7 @@ import math
 from matplotlib.patches import Patch
 from matplotlib.font_manager import FontProperties
 from matplotlib.ticker import FuncFormatter
-# todo: 写一个函数，输入的是excel文件地址，输出的是折叠柱状图，每个dataset画一个柱状图，因此需要画一个一行四列的柱状图
-# excel 文件的格式是：第一列是方法的名称，第二列和第三个列根据具体的任务去确定：
-# Time: SETime,PRTime
-# Tokens : EEMs,LLMs
-# Mermoery: All,Average
+SETIME = 75.29
 def format_func(value, tick_number):
     return r'$2^{%d}$' % int(value)
 def plotImage(tasktype, excelRoot, savename):
@@ -19,13 +15,8 @@ def plotImage(tasktype, excelRoot, savename):
         "#293844",
         "#FAF0EB","#FCDCC6","#f79767","#f87349","#f64c29","#d32912","#DEBC33","#720909",
         "#42CFFE", "#0487e2",
-        "#C8EAD1","#73C088","#397D54", "#3D4F2F"
-        # "#293844",
-        # "#f4f1d0","#E3E9D7","#C8D7B4","#eae0ab","#B7A368","#739353","#50673A","#3D4F2F",
-        # "#75b5dc","#478ecc",
-        # "#c87d98","#b25f79", "#9b3f5c", "#832440", 
+        "#C8EAD1","#73C088","#397D54", "#3D4F2F" 
     ]
-    # 画堆积柱状图，一个有四个dataset,因此需要画一个一行四列的柱状图
     fig, axes = plt.subplots(1, 4, figsize=(30,5))  # 1行4列，调整大小以适应
     axes = axes.flatten()  # 将 2D 数组转为 1D 数组，方便访问每个子图
     
@@ -51,7 +42,7 @@ def plotImage(tasktype, excelRoot, savename):
         ax = axes[i]
         if tasktype == "Time":
             Value1 = df["SETime"].tolist()  # SETime
-            Value1 = [x+75.29 for x in Value1]
+            Value1 = [x+SETIME for x in Value1]
             Value2 = df["PRTime"].tolist()  # PRTime
             label1 = "Subgraph-Extraction Time"
             label2 = "Path-Retrieval Time"
@@ -97,8 +88,6 @@ def plotImage(tasktype, excelRoot, savename):
             ax.set_ylim(0, 100)
         else:
             raise ValueError("tasktype must be one of Time, Tokens, Memory")
-        # Value1 = df["SETime"].tolist()  # SETime
-        # Value2 = df["PRTime"].tolist()  # PRTime
         
         x = np.arange(len(Value1), dtype=float)
         x[1:] += 1 
@@ -110,14 +99,6 @@ def plotImage(tasktype, excelRoot, savename):
         ax.axvspan(1, 20, facecolor='#fee3ce', alpha=0.3)
         ax.axvspan(20, 26, facecolor='#B7A368', alpha=0.1)
         ax.axvspan(26 , 37, facecolor='#E3E9D7', alpha=0.3)
-        # x = np.arange(len(Hitlist))
-        # 设置坐标轴刻度，a为最小值，b为最大值
-        a = min(Value1)-0.1
-        b = max(Value2)+0.1
-        # print("Value1:",Value1)
-        # print("Value2:",Value2)
-        # Value1 = [x for pair in zip(Value1, Value2) for x in pair]
-        # print(Value1)
         width = 0.8  # 控制柱子的宽度
         gap = 0   # 设置柱子之间的间隔
         # print(x)
@@ -202,8 +183,6 @@ def plotImage(tasktype, excelRoot, savename):
             ax.text(-0.8,-2, "No.", ha='right', va='center', fontsize=25, fontweight='bold')
         
         # 设置标题
-    # ax.set_title(f"{dataset} {tasktype} Comparison")
-    # 设置图例,去除重复的图例
     if tasktype == "Memory":
         handles = [
             # Patch(hatch=hatch1, label=label1, facecolor='none'),  # 空白填充
@@ -249,19 +228,8 @@ def plotMemoryImage(tasktype, excelRoot, savename):
         "#FAF0EB","#FCDCC6","#f79767","#f87349","#f64c29","#d32912","#DEBC33","#720909",
         "#42CFFE", "#0487e2",
         "#C8EAD1","#73C088","#397D54", "#3D4F2F"
-        # "#293844",
-        # "#f4f1d0","#E3E9D7","#C8D7B4","#eae0ab","#B7A368","#739353","#50673A","#3D4F2F",
-        # "#75b5dc","#478ecc",
-        # "#c87d98","#b25f79", "#9b3f5c", "#832440", 
     ]
-    # 画堆积柱状图，一个有四个dataset,因此需要画一个一行四列的柱状图
     fig, axes = plt.subplots(1, 1, figsize=(9, 4.2))  # 1行4列，调整大小以适应
-    # axes = axes.flatten()  # 将 2D 数组转为 1D 数组，方便访问每个子图
-    
-    # 数据集列表，需要替换为你实际使用的数据集
-    # datasetlist = ['reason_dataset1', 'reason_dataset2', 'reason_dataset3', 'reason_dataset4']
-    
-    # 开始画每一个子图
     for i, dataset in enumerate(datasetlist[:1]):
         excelpath = f"{excelRoot}/{dataset}-{tasktype}.xlsx"
         df = pd.read_excel(excelpath.replace("reason_dataset", dataset))
@@ -299,9 +267,6 @@ def plotMemoryImage(tasktype, excelRoot, savename):
             ax.set_ylim(0, 88)
         else:
             raise ValueError("tasktype must be one of Time, Tokens, Memory")
-        # Value1 = df["SETime"].tolist()  # SETime
-        # Value2 = df["PRTime"].tolist()  # PRTime
-        # 把Value2查到Value1里面,每隔1个插入一个
 
         x = np.arange(len(Value1), dtype=float)
         x[1:] += 1
@@ -358,17 +323,7 @@ def plotMemoryImage(tasktype, excelRoot, savename):
         ax.set_ylabel("Memory (GB)", fontsize=35, fontweight='bold')
         ax.tick_params(axis='x', which='major', labelsize=30, width=3,length=10,rotation=55)
         ax.tick_params(axis='y', which='major', labelsize=30, width=3,length=0)
-        # ax.xaxis.labelpad = 10
-        # if tasktype == "Memory":
-        #     ax.text(8, -40, dataset, ha='center', va='center', fontsize=30, fontweight='bold')
-        # elif tasktype == "Time":
-        #     ax.text(8, -60, dataset, ha='center', va='center', fontsize=30, fontweight='bold')
-        # else:
-        #     ax.text(8, -160, dataset, ha='center', va='center', fontsize=30, fontweight='bold')
         ax.text(-1.1,-8, "No.", ha='right', va='center', fontsize=20, fontweight='bold')
-        # 设置标题
-    # ax.set_title(f"{dataset} {tasktype} Comparison")
-    # 设置图例,去除重复的图例
     if tasktype == "Memory":
         handles = [
             # Patch(hatch=hatch1, label=label1, facecolor='none'),  # 空白填充
@@ -384,10 +339,6 @@ def plotMemoryImage(tasktype, excelRoot, savename):
     handles = handles[:2]
     # plt.legend(by_label.values(), by_label.keys())
     font_properties = FontProperties(weight='bold', size=30)
-    
-    # plt.subplots_adjust(wspace=0.45, hspace=0.55)
-    # plt.title(f"{dataset} Generation", fontsize=60, fontweight='bold')
-    # plt.legend(handles=handles, loc='upper center',bbox_to_anchor=(0.5, 1.45), ncol=3, prop=font_properties,labelspacing=0.05,)
     plt.subplots_adjust(top=0.96, left=0.2, right=0.99,bottom=0.2)
     # plt.tight_layout()
     # 保存图像

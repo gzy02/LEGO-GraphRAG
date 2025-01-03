@@ -6,9 +6,6 @@ import numpy as np
 from matplotlib.lines import Line2D
 import random
 from matplotlib.font_manager import FontProperties
-# 目标：把ROOTPATH下不同数据集的 GSR,OSR-EEMS,OSR-LLMS,ISR-EEMs,ISR-LLMs的结果进行合并，并画柱状图进行可视化
-# 步骤：1.获得整理好的execl表
-# 2.画柱状图 F1和Hit@32 分别画，总共需要画10张子图，共两张大图
 from evalut import eval_hr_topk
 from evalut import eval_f1
 # PATHNUM = 12
@@ -28,10 +25,6 @@ def processSingleJson(jsonpath,prtype,idlist):
         for i in range(len(infos["eval_info"])):
             data = infos["eval_info"][i]
             prtime = data["semanticMethodRetrievalModuleTime"]+data["structureMethodRetrievalModuleTime"]
-            id = str(data["id"])
-            # if id not in idlist:
-            #     continue
-            # else:
             PRTime += prtime
             count += 1
     PRTime = PRTime/count
@@ -71,19 +64,6 @@ def calculate_position_weighted_averages(file_paths , output_file):
     result_df.to_excel(output_file, index=False)
 
     return result_df
-
-# 把这些datasetlist-modelist的结果进行合并
-# 先处理一个dataset的,然后把四个dataset的结果合并
-# 结果excel：
-# 1. EPR SPR 一个excel
-# 2. SPR/BM25 SPR/EMB SPR/BGE SPR/Random 一个excel
-# 3. SPR/LLM/qwen2-70b/BM25 SPR/LLM/qwen2-70b/EMB SPR/LLM/qwen2-70b/BGE SPR/LLM/qwen2-70b/Random 一个excel
-# 4. BeamSearch/Random BeamSearch/BM25 BeamSearch/EMB BeamSearch/BGE 一个excel
-# 5. BeamSearch/LLM/qwen2-70b/BM25 BeamSearch/LLM/qwen2-70b/EMB BeamSearch/LLM/qwen2-70b/BGE BeamSearch/LLM/qwen2-70b/Random 一个excel
-# excel 格式
-# Method F1 Hit@32
-# EPR  0.1 0.2
-# SPR  0.1 0.2
 def PR():
     datasetlist = ["CWQ","webqsp","GrailQA","WebQuestion"] #,"WebQuestion","GrailQA"
     modelist = ["EMB/edge","PPR","LLM/qwen2-70b/EMB/ppr_1000_edge_64"]
@@ -222,19 +202,12 @@ def getStructImage(rootpath, saveImgpath):
             fontsize=15,                      # 字体大小
             color='black'                     # 字体颜色
             )
-    # plt.bar(df['Method'], df[f'F1@{PATHNUM}'], label='F1', alpha=0.7,color= colorslist)
-    #     # 隐藏 x 轴刻度
     x_labels = ["SBR", "OSAR-EEMs", "OSAR-LLMs", "ISAR-EEMs", "ISAR-LLMs"]
-    # x_labels = ["SBR", "OSAR-EEMs\n(SPR)", "ISAR-EEMs\n(BeamSearch)"]
-
-    # plt.xticks([])
-
 
     plt.yticks(fontsize=35)
     # 设置y轴范围
     plt.ylim(0, 7)
     plt.xticks([0.5,4,7,10,13], x_labels, fontsize=50,rotation=25, fontweight='bold')
-    # plt.tick_params(axis='x', bottom=False)  # 禁用 x 轴刻度延长线
     plt.tick_params(axis='x', which='major', length=10,labelsize=35)
     # 添加图例
     yticks = [i for i in range(0,8,1)]
@@ -247,18 +220,6 @@ def getStructImage(rootpath, saveImgpath):
     # print(labels)
     labels = [labels[0],labels[1],labels[2],labels[3],labels[4],labels[5]]
     font_properties = FontProperties(weight='bold', size=30)
-    # 自由设置位置
-    # itemname = {
-    #     "EPR":"EPR",
-    #     "SPR":"SPR",
-    #     "BM25":"SPR+BM25",
-    #     "ST":"ST",
-    #     "BGE":"BGE",
-    #     "Random":"Random",
-    #     "LLM-ST":"LLM-ST",
-    #     "LLM":"LLM"
-    # }
-    # labels = [item for item in labels]
     plt.legend(handles, labels,loc='center',bbox_to_anchor=(0.49, 1.18), prop=font_properties, ncol=3)
     # plt.ylabel('F1', fontsize=14, fontweight='bold')
     plt.ylabel('Time(s)', fontsize=60, fontweight='bold')
@@ -267,5 +228,5 @@ def getStructImage(rootpath, saveImgpath):
     plt.savefig(saveImgpath)
     print(f"Done {saveImgpath}")
 
-# PR()
+PR()
 getStructImage(ROOTPATH+"/Result", ROOTPATH+f"/Result/PR-Time.pdf")

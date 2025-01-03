@@ -178,23 +178,6 @@ k_values=(
     ["WebQTest-7"]=2276948
 )
 
-
-# 输出文件
-output_file="TopPPR_time_All.txt"
-
-# 清空输出文件（如果已存在）
-> "$output_file"
-
-# 循环遍历所有的 relations
 for relation in "${!k_values[@]}"; do
-    # 计算执行时间并提取实际时间
-    start_time=$(date +%s%N)  # 获取当前时间的纳秒数
-    ./TopPPR -d "$relation" -algo TopPPR -r 1 -n 1 -k 1000
-    end_time=$(date +%s%N)  # 获取结束时间的纳秒数
-
-    # 计算花费的时间（纳秒转换为秒）
-    elapsed_time=$((($end_time - $start_time) / 1000000000))
-
-    # 将 relation 和时间写入文件
-    echo "$relation $elapsed_time" >> "$output_file"
+    ./TopPPR -d "$relation" -algo TopPPR -r 1 -n 1 -k 2000
 done

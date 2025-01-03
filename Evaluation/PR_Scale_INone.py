@@ -133,9 +133,9 @@ if __name__ == '__main__':
     methodlist = ["GSR","OSR-EEMS","ISR-EEMs"]
     PATHNUM = [1,4,8,16,32]
     mergeExcel()
-    # for method in methodlist:
-    #     excelpath = f"{rootpath}/Average-Merged_{method}.xlsx"
-    #     saveImagePath = f"{rootpath}/Average-Merged_{method}.pdf"
+    for method in methodlist:
+        excelpath = f"{rootpath}/Average-Merged_{method}.xlsx"
+        saveImagePath = f"{rootpath}/Average-Merged_{method}.pdf"
     saveImagePath = f"{rootpath}/PR-Average-Merged.pdf"
     PRImage(saveImagePath)
     print("Done")

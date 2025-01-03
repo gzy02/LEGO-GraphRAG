@@ -205,7 +205,7 @@ if __name__ == '__main__':
     # 1  0.1 0.2 0.3
     # 2  0.2 0.3 0.4
     # ...
-    # getexcel()
-    # print("get excel done!")
+    getexcel()
+    print("get excel done!")
     getImage()
     print("get image done!")
