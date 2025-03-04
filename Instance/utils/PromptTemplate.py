@@ -237,3 +237,20 @@ Given the question '{question}' and entities [{entities}], identify the potentia
 
 """
 # endregion
+
+############################################
+# region Reasonging Module
+PERSONA = """You are an expert reasoner with a deep understanding of logical connections and relationships. Your task is to analyze the given reasoning paths and provide clear and accurate answers to the questions based on these paths."""
+
+REASONING_TEMPLATE = """Based on the reasoning paths, please answer the given question.
+
+Reasoning Paths:
+{paths}
+
+Question:
+{question}
+
+## Output:
+
+"""
+# endregion
